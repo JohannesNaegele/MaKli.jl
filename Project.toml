@@ -1,0 +1,13 @@
+name = "MaKli"
+uuid = "fcd80eff-2c71-4989-a295-cab79161dab1"
+authors = ["Johannes Nägele und Maurice Schneider"]
+version = "1.0.0-DEV"
+
+[compat]
+julia = "1"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
