@@ -2,6 +2,7 @@ using Pkg; Pkg.activate("./MaKli")
 using DataFrames
 using Gadfly
 using Pipe
+import Cairo, Fontconfig
 
 Gadfly.push_theme(:default) # dark mode
 # Gadfly.push_theme(style(background_color=nothing))
@@ -9,7 +10,7 @@ Gadfly.push_theme(:default) # dark mode
 include("components.jl")
 
 dfs = [atmosphere, hydrosphere, cryosphere, land_surface, biosphere]
-ids = ["atmosphere", "hydrosphere", "cryosphere", "land_surface", "biosphere"]
+ids = ["atmosphere", "hydrosphere", "cryosphere", "land surface", "biosphere"]
 
 for i in eachindex(dfs)
     transform!(dfs[i], :Process => (x -> ids[i]) => :component)
@@ -23,27 +24,27 @@ function bound(x)
     lowest = minimum(filter(!=(0.0), x))
     for i in eachindex(x)
         if x[i] == Inf
-            x[i] = highest*10
+            x[i] = 1e5^ceil(log(1e5, highest))
         elseif x[i] == 0.0
-            x[i] = lowest/10
+            x[i] = 1e5^floor(log(1e5, lowest))
         end
     end
     return x
 end
 
-@pipe df |>
-    transform!(
-        _,
-        ["Characteristic Time Scale", "Characteristic Spatial Scale"] => ByRow((x, y) -> [margin(x), margin(y)]) => ["Characteristic Time Scale", "Characteristic Spatial Scale"]
-    ) |>
-    transform!(
-        _,
-        ["Characteristic Time Scale", "Characteristic Spatial Scale"] => ByRow((x, y) -> [x..., y...]) => [:x_min, :x_max, :y_min, :y_max]
-    ) |>
-    transform!(
-        _,
-        [:x_min, :x_max, :y_min, :y_max] => (u, x, y, z) -> bound.([u, x, y, z]) => [:x_min, :x_max, :y_min, :y_max]
-    )
+# @pipe df |>
+#     transform!(
+#         _,
+#         ["Characteristic Time Scale", "Characteristic Spatial Scale"] => ByRow((x, y) -> [margin(x), margin(y)]) => ["Characteristic Time Scale", "Characteristic Spatial Scale"]
+#     ) |>
+#     transform!(
+#         _,
+#         ["Characteristic Time Scale", "Characteristic Spatial Scale"] => ByRow((x, y) -> [x..., y...]) => [:x_min, :x_max, :y_min, :y_max]
+#     ) |>
+#     transform!(
+#         _,
+#         [:x_min, :x_max, :y_min, :y_max] => (u, x, y, z) -> bound.([u, x, y, z]) => [:x_min, :x_max, :y_min, :y_max]
+#     )
 
 # plot(
 #     atmosphere,
@@ -69,33 +70,40 @@ plot(
     alpha=[0.8],
     Geom.rect,
     Scale.x_log10, Scale.y_log10,
-    # Guide.ylabel(nothing)
+    Guide.xlabel("Characteristic Time Scale"),
+    Guide.ylabel("Characteristic Spatial Scale")
 )
 
-plot(
+p = plot(
     df,
     xmin=:x_min,
     xmax=:x_max,
     ymin=:y_min,
     ymax=:y_max,
     color=:Process,
-    alpha=[0.2],
-    Geom.rect,
+    alpha=[0.5],
+    ygroup=:component,
+    Geom.subplot_grid(Geom.rect),
     Scale.x_log10, Scale.y_log10,
-    # Guide.ylabel(nothing)
+    Guide.xlabel("Characteristic Time Scale in s"),
+    Guide.ylabel("Characteristic Spatial Scale in m")
 )
 
-@pipe df |> subset(_, :component => ByRow(==("atmosphere"))) |>
-    plot(
-        _,
-        xmin=:x_min,
-        xmax=:x_max,
-        ymin=:y_min,
-        ymax=:y_max,
-        color=:Process,
-        alpha=[0.5],
-        Geom.rect,
-        Scale.x_log10, Scale.y_log10,
-        Guide.xlabel("Characteristic Time Scale"),
-        Guide.ylabel("Characteristic Spatial Scale")
-    )
+draw(PDF("components.pdf", 20cm, 20cm), p)
+
+# TODO: fix ^ Unicode
+
+# @pipe df |> subset(_, :component => ByRow(==("atmosphere"))) |>
+#     plot(
+#         _,
+#         xmin=:x_min,
+#         xmax=:x_max,
+#         ymin=:y_min,
+#         ymax=:y_max,
+#         color=:Process,
+#         alpha=[0.5],
+#         Geom.rect,
+#         Scale.x_log10, Scale.y_log10,
+#         Guide.xlabel("Characteristic Time Scale"),
+#         Guide.ylabel("Characteristic Spatial Scale")
+#     )
