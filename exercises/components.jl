@@ -31,7 +31,7 @@ hydrosphere = DataFrame(
         "deep water formation",
         "meso-scale oceanic gyres",
         "propagation of Rossby waves",
-        "El Niño"
+        "El Niño",
         "turnover of deep water"
     ],
     "Characteristic Time Scale" => [
@@ -70,7 +70,7 @@ cryosphere = DataFrame(
     ]
 )
 
-land_surface = cryosphere = DataFrame(
+land_surface = DataFrame(
     "Process" => [
         "changes in reflectivity",
         "isostatic equilibration of the crust by covering ice masses"
