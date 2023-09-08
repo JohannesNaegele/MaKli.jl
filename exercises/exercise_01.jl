@@ -3,6 +3,9 @@ using DataFrames
 using Gadfly
 using Pipe
 
+Gadfly.push_theme(:default) # dark mode
+# Gadfly.push_theme(style(background_color=nothing))
+
 include("components.jl")
 
 dfs = [atmosphere, hydrosphere, cryosphere, land_surface, biosphere]
@@ -14,30 +17,85 @@ end
 
 df = vcat(atmosphere, hydrosphere, cryosphere, land_surface, biosphere)
 
-# @pipe atmosphere |>
-#     transform!(
-#         _,
-#         ["Characteristic Time Scale", "Characteristic Spatial Scale"] => ByRow()
-#     )
+margin(x) = x[1] == x[2] ? [log10(x[1]) - 0.5, log10(x[1]) + 0.5].^10 : x
+function bound(x)
+    highest = maximum(filter(!=(Inf), x))
+    lowest = minimum(filter(!=(0.0), x))
+    for i in eachindex(x)
+        if x[i] == Inf
+            x[i] = highest*10
+        elseif x[i] == 0.0
+            x[i] = lowest/10
+        end
+    end
+    return x
+end
 
-process_repeated = repeat(atmosphere[!, "Process"], inner=4)
+@pipe df |>
+    transform!(
+        _,
+        ["Characteristic Time Scale", "Characteristic Spatial Scale"] => ByRow((x, y) -> [margin(x), margin(y)]) => ["Characteristic Time Scale", "Characteristic Spatial Scale"]
+    ) |>
+    transform!(
+        _,
+        ["Characteristic Time Scale", "Characteristic Spatial Scale"] => ByRow((x, y) -> [x..., y...]) => [:x_min, :x_max, :y_min, :y_max]
+    ) |>
+    transform!(
+        _,
+        [:x_min, :x_max, :y_min, :y_max] => (u, x, y, z) -> bound.([u, x, y, z]) => [:x_min, :x_max, :y_min, :y_max]
+    )
 
-# Flatten vector columns
-time_scale_flattened = vcat(atmosphere[!, "Characteristic Time Scale"]...)
+# plot(
+#     atmosphere,
+#     x="Characteristic Time Scale",
+#     y="Characteristic Spatial Scale",
+#     # color=:id, 
+#     alpha=[0.3],
+#     linestyle=[:dash],
+#     Geom.polygon(fill=true),
+#     Scale.color_discrete,
+#    Theme(line_width=2pt,
+#    lowlight_color=identity,
+#    discrete_highlight_color=identity)
+# )
 
 plot(
-    atmosphere,
-    x="Characteristic Time Scale",
-    y="Characteristic Spatial Scale",
-    # color=:id, 
-    alpha=[0.3],
-    linestyle=[:dash],
-    Geom.polygon(fill=true),
-    Scale.color_discrete,
-   Theme(line_width=2pt,
-   lowlight_color=identity,
-   discrete_highlight_color=identity)
+    df,
+    xmin=:x_min,
+    xmax=:x_max,
+    ymin=:y_min,
+    ymax=:y_max,
+    color=:component,
+    alpha=[0.8],
+    Geom.rect,
+    Scale.x_log10, Scale.y_log10,
+    # Guide.ylabel(nothing)
 )
 
-reduce(vcat, [DataFrame(x=[1, 5, 5, 1].+d, y=[14, 14, 10, 10].-d, id=d+1) for d in 0:9])
-[DataFrame(x=[1, 5, 5, 1].+d, y=[14, 14, 10, 10].-d, id=d+1) for d in 0:9]
+plot(
+    df,
+    xmin=:x_min,
+    xmax=:x_max,
+    ymin=:y_min,
+    ymax=:y_max,
+    color=:Process,
+    alpha=[0.2],
+    Geom.rect,
+    Scale.x_log10, Scale.y_log10,
+    # Guide.ylabel(nothing)
+)
+
+@pipe df |> subset(_, :component => ByRow(==("atmosphere"))) |>
+    plot(
+        _,
+        xmin=:x_min,
+        xmax=:x_max,
+        ymin=:y_min,
+        ymax=:y_max,
+        color=:Process,
+        alpha=[0.5],
+        Geom.rect,
+        Scale.x_log10, Scale.y_log10,
+        Guide.xlabel("Characteristic Time Scale"),
+        Guide.ylabel("Characteristic Spatial Scale")
+    )
