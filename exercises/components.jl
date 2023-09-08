@@ -51,3 +51,51 @@ hydrosphere = DataFrame(
         [0.0, Inf]
     ]
 )
+
+cryosphere = DataFrame(
+    "Process" => [
+        "formation of permafrost",
+        "formation of sea ice",
+        "formation of land ice masses"
+    ],
+    "Characteristic Time Scale" => [
+        [1e7, 1e9],
+        [1e7, 1e8],
+        [1e8, 1e11],
+    ],
+    "Characteristic Spatial Scale" => [
+        [1e0, 1e6],
+        [1e0, 1e6],
+        [1e2, 1e7]
+    ]
+)
+
+land_surface = cryosphere = DataFrame(
+    "Process" => [
+        "changes in reflectivity",
+        "isostatic equilibration of the crust by covering ice masses"
+    ],
+    "Characteristic Time Scale" => [
+        [1e7, 1e8],
+        [1e8, 1e11]
+    ],
+    "Characteristic Spatial Scale" => [
+        [1e2, Inf],
+        [1e6, Inf]
+    ]
+)
+
+biosphere = DataFrame(
+    "Process" => [
+        "exchange of carbon with the atmosphere",
+        "transformation of vegetation zones"
+    ],
+    "Characteristic Time Scale" => [
+        [1e4, 1e8],
+        [1e9, 1e10]
+    ],
+    "Characteristic Spatial Scale" => [
+        [1e-3, Inf],
+        [1e2, 1e7]
+    ]
+)
