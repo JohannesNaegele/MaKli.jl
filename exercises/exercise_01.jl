@@ -32,19 +32,19 @@ function bound(x)
     return x
 end
 
-# @pipe df |>
-#     transform!(
-#         _,
-#         ["Characteristic Time Scale", "Characteristic Spatial Scale"] => ByRow((x, y) -> [margin(x), margin(y)]) => ["Characteristic Time Scale", "Characteristic Spatial Scale"]
-#     ) |>
-#     transform!(
-#         _,
-#         ["Characteristic Time Scale", "Characteristic Spatial Scale"] => ByRow((x, y) -> [x..., y...]) => [:x_min, :x_max, :y_min, :y_max]
-#     ) |>
-#     transform!(
-#         _,
-#         [:x_min, :x_max, :y_min, :y_max] => (u, x, y, z) -> bound.([u, x, y, z]) => [:x_min, :x_max, :y_min, :y_max]
-#     )
+@pipe df |>
+    transform!(
+        _,
+        ["Characteristic Time Scale", "Characteristic Spatial Scale"] => ByRow((x, y) -> [margin(x), margin(y)]) => ["Characteristic Time Scale", "Characteristic Spatial Scale"]
+    ) |>
+    transform!(
+        _,
+        ["Characteristic Time Scale", "Characteristic Spatial Scale"] => ByRow((x, y) -> [x..., y...]) => [:x_min, :x_max, :y_min, :y_max]
+    ) |>
+    transform!(
+        _,
+        [:x_min, :x_max, :y_min, :y_max] => (u, x, y, z) -> bound.([u, x, y, z]) => [:x_min, :x_max, :y_min, :y_max]
+    )
 
 # plot(
 #     atmosphere,
@@ -89,7 +89,7 @@ p = plot(
     Guide.ylabel("Characteristic Spatial Scale in m")
 )
 
-draw(PDF("components.pdf", 20cm, 20cm), p)
+draw(SVG("./MaKli/exercises/components.svg", 20cm, 20cm), p)
 
 # TODO: fix ^ Unicode
 
