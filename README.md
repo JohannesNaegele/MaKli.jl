@@ -4,5 +4,6 @@
 
 Package that implements course material of the lecture Numerics and Stochastics of Climate Models (Mannheim Klima).
 
-![trick](./exercises/components.svg)
+![Klimakomponenten](./exercises/components.svg)
+![Zeitreihen von CO2 und Temperaturdifferenz](./exercises/co2_temp.svg)
 <!-- <img src="./exercises/components.svg"> -->
