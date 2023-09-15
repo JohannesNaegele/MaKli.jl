@@ -5,7 +5,10 @@ using Pipe
 using CSV
 using Statistics
 using GLM
+using Optim
 CairoMakie.activate!(type = "svg")
+
+## Aufgabe 1
 
 co2 = CSV.File("./data/ncei.noaa.gov_pub_data_paleo_icecore_antarctica_vostok_co2nat-noaa.csv", comment="#") |> DataFrame
 temp = CSV.File("./data/ncei.noaa.gov_pub_data_paleo_icecore_antarctica_vostok_deutnat-noaa.csv", comment="#") |> DataFrame
@@ -31,7 +34,6 @@ save("./exercises/co2_temp.svg", f)
 # (b)
 df_rounded = @pipe df |>
     transform(_, :gas_ageBP => ByRow(x -> round(x/1000) * 1000) => :gas_ageBP)
-# round
 df_rounded = outerjoin(roundco2, temp, on = :gas_ageBP => :ice_ageBP)
 df_regr = @pipe df_rounded[!, [:gas_ageBP, :CO2, :deltaTS]] |> dropmissing
 
@@ -43,3 +45,26 @@ fm2 = @formula(temp ~ exp(co2))
 
 regr1 = lm(df_regr, fm1)
 regr2 = lm(df_regr, fm2)
+
+## Aufgabe 2
+const h = 6.62607015e-34
+const k_B = 1.380649e-23
+const c = 299792458
+
+function u(ν, T)
+    first = (8π*h*ν^3)/(c^3)
+    second = 1/(exp((h*ν) / (k_B*T)) - 1)
+    return first * second
+end
+
+function u_maximizer(T)
+    initial = [1.0]
+    sol = optimize(x -> -u(first(x), T)*1e50, initial)
+    return Optim.minimizer(sol)
+end
+
+c ./ u_maximizer.([1000, 1500, 2000])
+
+initial = [1.0]
+sol = optimize(x -> -u(first(x), 2000)*1e30, initial)
+Optim.minimizer(sol)

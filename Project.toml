@@ -12,6 +12,7 @@ DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 Fontconfig = "186bb1d3-e1f7-5a2c-a377-96d770f13627"
 GLM = "38e38edf-8417-5370-95a0-9cbb8c7f171a"
 Gadfly = "c91e804a-d5a3-530f-b6f0-dfbca275c004"
+Optim = "429524aa-4258-5aef-a3af-852621145aeb"
 Pipe = "b98c9c47-44ae-5843-9183-064241ee97a0"
 
 [compat]
