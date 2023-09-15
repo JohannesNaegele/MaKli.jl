@@ -2,9 +2,8 @@ using Pkg; Pkg.activate("./MaKli")
 using DataFrames
 using Gadfly
 using Pipe
-import Cairo, Fontconfig
-
-Gadfly.push_theme(:default) # dark mode
+# import Cairo, Fontconfig
+Gadfly.push_theme(:dark)
 # Gadfly.push_theme(style(background_color=nothing))
 
 include("components.jl")
@@ -60,19 +59,19 @@ end
 #    discrete_highlight_color=identity)
 # )
 
-plot(
-    df,
-    xmin=:x_min,
-    xmax=:x_max,
-    ymin=:y_min,
-    ymax=:y_max,
-    color=:component,
-    alpha=[0.8],
-    Geom.rect,
-    Scale.x_log10, Scale.y_log10,
-    Guide.xlabel("Characteristic Time Scale"),
-    Guide.ylabel("Characteristic Spatial Scale")
-)
+# plot(
+#     df,
+#     xmin=:x_min,
+#     xmax=:x_max,
+#     ymin=:y_min,
+#     ymax=:y_max,
+#     color=:component,
+#     alpha=[0.8],
+#     Geom.rect,
+#     Scale.x_log10, Scale.y_log10,
+#     Guide.xlabel("Characteristic Time Scale"),
+#     Guide.ylabel("Characteristic Spatial Scale")
+# )
 
 p = plot(
     df,
