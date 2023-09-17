@@ -42,8 +42,8 @@ df_rounded = @pipe df |>
 df_regr = @pipe df |>
     leftjoin(_, df_rounded, on = :rounded_time) |>
     _[!, [:gas_ageBP, :CO2, :deltaTS_mean]] |>
-    dropmissing(_) |>
-    filter(r -> all(x -> !isnan(x), r), _)
+    dropmissing(_)
+    # filter(r -> all(x -> !isnan(x), r), _)
 
 cor(df_regr.CO2, df_regr.deltaTS_mean)
 cor(exp.(df_regr.CO2), df_regr.deltaTS_mean)
@@ -59,28 +59,25 @@ regr2 = lm(fm2, df_regr, dropcollinear=false)
 r2(regr1)
 r2(regr2)
 
-predict(regr1, DataFrame(:CO2 => [233, 300, 450, 500]))
-predict(regr2, DataFrame(:CO2 => [233, 300, 450, 500]))
+predict(regr1, DataFrame(:CO2 => [233, 300, 420, 500]))
+predict(regr2, DataFrame(:CO2 => [233, 300, 420, 500]))
 
 # sanity check 1
 f = Figure(resolution = (1300, 600));
-ax1 = Axis(f[1, 1], yticklabelcolor = :blue, ylabel = "CO2 in PPM", xlabel="Jahre vor 1999", xreversed=true, xtickformat = values -> ["$(Int(value)) Tsd." for value in values])
-ax2 = Axis(f[1, 1], yticklabelcolor = :red, yaxisposition = :right, xreversed=true, ylabel="Temperaturdifferenz in Grad Celsius gerundet auf 1000 Jahre")
-hidespines!(ax2)
-hidexdecorations!(ax2)
+ax1 = Axis(f[1, 1], yticklabelcolor = :blue, ylabel = "CO2 in PPM", xlabel="Temperaturdifferenz in Grad Celsius gerundet auf 1000 Jahre", xreversed=true, xtickformat = values -> ["$(Int(value)) Tsd." for value in values])
 
-lines!(ax1, df_regr.gas_ageBP./1000, df_regr.CO2, color = :blue)
-lines!(ax2, df_regr.gas_ageBP./1000, df_regr.deltaTS_mean, color = :red)
+lines!(ax1, temp.ice_ageBP./1000, temp.deltaTS, color = :blue)
+lines!(ax1, df_regr.gas_ageBP./1000, df_regr.deltaTS_mean, color = :red)
 f
 
 # sanity check 2
 sort!(df_regr, :CO2)
 f = Figure(resolution = (1300, 600));
-ax1 = Axis(f[1, 1], yticklabelcolor = :blue, xlabel = "CO2 in PPM")
+ax1 = Axis(f[1, 1], yticklabelcolor = :blue, xlabel = "CO2 in PPM", ylabel = "Temperaturdifferenz in Grad Celsius gerundet auf 1000 Jahre")
 
 scatter!(ax1, df_regr.CO2, df_regr.deltaTS_mean, color = :blue)
 f
-
+save("./MaKli/exercises/co2_temp_cor.svg", f)
 
 ## Aufgabe 2
 g(x) = 3 - (x * exp(x))/(exp(x) - 1)

@@ -6,4 +6,5 @@ Package that implements course material of the lecture Numerics and Stochastics 
 
 ![Klimakomponenten](./exercises/components.svg)
 ![Zeitreihen von CO2 und Temperaturdifferenz](./exercises/co2_temp.svg)
+![Korrelationsplot CO2 und Temperaturdifferenz](./exercises/co2_temp_cor.svg)
 <!-- <img src="./exercises/components.svg"> -->
