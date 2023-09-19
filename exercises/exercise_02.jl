@@ -7,6 +7,7 @@ using Statistics
 using GLM
 using Optim
 using NLsolve
+using Impute
 CairoMakie.activate!(type = "svg")
 
 ## Aufgabe 1
@@ -25,8 +26,9 @@ ax2 = Axis(f[1, 1], yticklabelcolor = :red, yaxisposition = :right, xreversed=tr
 hidespines!(ax2)
 hidexdecorations!(ax2)
 
-lines!(ax1, co2.gas_ageBP./1000, co2.CO2, color = :blue)
-lines!(ax2, temp.ice_ageBP./1000, temp.deltaTS, color = :red)
+# watch out: if you have two axes you need the same x-axis length!
+lines!(ax1, df.gas_ageBP./1000, Impute.interp(df.CO2), color = :blue)
+lines!(ax2, df.gas_ageBP./1000, Impute.interp(df.deltaTS), color = :red)
 
 f
 save("./MaKli/exercises/co2_temp.svg", f)
@@ -84,7 +86,9 @@ g(x) = 3 - (x * exp(x))/(exp(x) - 1)
 sol = nlsolve(x -> g(first(x)), [1.0])
 sol.zero
 
-### old ###
+# ------------------------
+# | experimenteller Teil |
+# ------------------------
 
 const h = 6.62607015e-34
 const k_B = 1.380649e-23
