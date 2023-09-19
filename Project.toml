@@ -17,6 +17,7 @@ Optim = "429524aa-4258-5aef-a3af-852621145aeb"
 Pipe = "b98c9c47-44ae-5843-9183-064241ee97a0"
 
 [compat]
+CairoMakie = "0.10"
 DataFrames = "1"
 Pipe = "1"
 GLM = "1"
