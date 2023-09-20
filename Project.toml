@@ -20,13 +20,14 @@ Pipe = "b98c9c47-44ae-5843-9183-064241ee97a0"
 [compat]
 AlgebraOfGraphics = "0.6"
 CSV = "0.10"
-Gadfly = "1"
 CairoMakie = "0.10"
 DataFrames = "1"
-Pipe = "1"
 GLM = "1"
-Optim = "1"
+Gadfly = "1"
+Impute = "0.6"
 NLsolve = "4"
+Optim = "1"
+Pipe = "1"
 julia = "1"
 
 [extras]
