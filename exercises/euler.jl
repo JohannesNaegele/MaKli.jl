@@ -19,12 +19,11 @@ function implicit_euler_solve(f, u0, t_span, h)
     u = zeros(length(u0), length(t))
     u[:, 1] = u0
     
-    for i = 1:length(t)-1
-    
-        function g!(u_next, residual)
-            residual .= u_next .- u[:, i] .- h * f(u_next, t[i+1])
+    for i = 1:length(t)-1    
+        function g!(u_next)
+            u_next .- u[:, i] .- h * f(u_next, t[i+1])
         end
-        
+
         result = nlsolve(g!, u[:, i])
         u[:, i+1] = result.zero
     end
