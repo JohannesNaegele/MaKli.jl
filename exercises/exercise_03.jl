@@ -23,23 +23,34 @@ S(t) = S₀ * (1 - 0.06 * sin(ω_hat * t))
 t_end = 40000000
 f(T, t; H, ρ, C) = (S(t) * (1 - α(t)) / 4 - T^4 * (ε * σ)) / (H * ρ * C)
 T_0 = 285.0
+t_span = (0.0, t_end)
+h = 60
 
 # idiomatic solution
-t_span = (0.0, t_end)
 prob = ODEProblem((T, p, t) -> f(T, t; H=H, ρ=ρ, C=C), T_0, t_span)
 sol = solve(prob, Tsit5(), reltol = 1e-8, abstol = 1e-8)
 
+# custom solution
+include("./euler.jl")
+t, u = euler_solve((T, t) -> f(first(T), t; H=H, ρ=ρ, C=C), [T_0], t_span, h)
+t, u = implicit_euler_solve((T, t) -> f(first(T), t; H=H, ρ=ρ, C=C), [T_0], t_span, h)
+
+plot(
+    x=t,
+    y=u,
+    Geom.line
+)
 # 
 plot(
-    x=1:100:t_end,
-    y=[sol(t) for t in 1:100:t_end],
+    x=1:h:t_end,
+    y=[sol(t) for t in 1:h:t_end],
     Geom.line
 )
 
 # one week
 plot(
-    x=1:100:24*3600*7,
-    y=[sol(t) for t in 1:100:24*3600*7],
+    x=1:h:24*3600*7,
+    y=[sol(t) for t in 1:h:24*3600*7],
     Geom.line
 )
 
