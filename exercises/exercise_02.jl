@@ -91,7 +91,7 @@ sol.zero
 # ------------------------
 
 const h = 6.62607015e-34
-const k_B = 1.380649e-23
+const k_B = 1.380649e-23 # Boltzmann constant
 const c = 299792458
 
 function u(ν, T)
