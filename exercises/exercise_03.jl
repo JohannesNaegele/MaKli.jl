@@ -7,7 +7,7 @@ import Cairo, Fontconfig
 include("./euler.jl")
 
 const σ = 5.670374419e-8 # Stefan-Boltzmann constant
-const ω = 2π/(3600*24)
+const ω = 2π / (3600 * 24)
 const ω_hat = ω * 365
 const α₀ = 0.3 # Albedo
 const S₀ = 1361 # Solar constant
@@ -21,8 +21,8 @@ C = 1000
 α(t) = α₀ * (1 - sin(ω * t) / 10)
 S(t) = S₀ * (1 - 0.06 * sin(ω_hat * t))
 
-day_in_seconds = 24*3600
-t_end = (1000*day_in_seconds) # 1000 days
+day_in_seconds = 24 * 3600
+t_end = (1000 * day_in_seconds) # 1000 days
 # t_end = 40000000
 f(T, t; H, ρ, C) = (S(t) * (1 - α(t)) / 4 - T^4 * (ε * σ)) / (H * ρ * C)
 T_0 = 285.0
@@ -31,7 +31,7 @@ h = 60 # 1 min
 
 # idiomatic solution
 prob = ODEProblem((T, p, t) -> f(T, t; H=H, ρ=ρ, C=C), T_0, t_span)
-sol = solve(prob, Tsit5(), reltol = 1e-8, abstol = 1e-8)
+sol = solve(prob, Tsit5(), reltol=1e-8, abstol=1e-8)
 
 plot(
     x=1:h:t_end,
@@ -43,7 +43,7 @@ plot(
 t, u = euler_solve((T, t) -> f(first(T), t; H=H, ρ=ρ, C=C), [T_0], t_span, h)
 
 p1 = plot(
-    x=t./day_in_seconds,
+    x=t ./ day_in_seconds,
     y=u,
     Geom.line,
     Guide.title("Solution with explicit Euler"),
@@ -53,8 +53,8 @@ p1 = plot(
 
 # one week
 p2 = plot(
-    x=(t./day_in_seconds)[begin:(60 * 24 * 8)],
-    y=u[begin:(60 * 24 * 8)],
+    x=(t./day_in_seconds)[begin:(60*24*8)],
+    y=u[begin:(60*24*8)],
     Geom.line,
     Guide.title("Solution with explicit Euler"),
     Guide.xlabel("time in days"),
@@ -64,7 +64,7 @@ p2 = plot(
 t, u = implicit_euler_solve((T, t) -> f(first(T), t; H=H, ρ=ρ, C=C), [T_0], t_span, h)
 
 p3 = plot(
-    x=t./day_in_seconds,
+    x=t ./ day_in_seconds,
     y=u,
     Geom.line,
     Guide.title("Solution with implicit Euler"),
@@ -74,8 +74,8 @@ p3 = plot(
 
 # one week
 p4 = plot(
-    x=(t./day_in_seconds)[begin:(60 * 24 * 8)],
-    y=u[begin:(60 * 24 * 8)],
+    x=(t./day_in_seconds)[begin:(60*24*8)],
+    y=u[begin:(60*24*8)],
     Geom.line,
     Guide.title("Solution with implicit Euler"),
     Guide.xlabel("time in days"),
@@ -91,9 +91,9 @@ const c = 0.6 # Wolkenbedeckung
 celsius_in_kelvin = 273.15
 T_0 = celsius_in_kelvin + 13
 T_W_0 = celsius_in_kelvin - 45
-t_end = 3600*24*100 # 100 Tage
+t_end = 3600 * 24 * 100 # 100 Tage
 t_span = (0.0, t_end)
-h = Int(ceil(t_end/1e5))
+h = Int(ceil(t_end / 1e5))
 
 # TODO: epsilon gleich?
 ΔTΔt(T, T_W; H, ρ, C) = (S₀ * (1 - α₀) / 4 + c * σ * T_W^4 - T^4 * (ε * σ)) / (H * ρ * C)
@@ -101,10 +101,10 @@ h = Int(ceil(t_end/1e5))
 
 # idiomatic solution
 prob = ODEProblem((temp, p, t) -> [ΔTΔt(temp[1], temp[2]; H=H, ρ=ρ, C=C), ΔT_WΔt(temp[1], temp[2]; H_W=H_W, ρ_W=ρ_W, C_W=C_W)], [T_0, T_W_0], t_span)
-sol = solve(prob, Tsit5(), reltol = 1e-8, abstol = 1e-8)
+sol = solve(prob, Tsit5(), reltol=1e-8, abstol=1e-8)
 
 df = DataFrame(:t => 1:100:t_end, :T => [sol(t)[1] for t in 1:100:t_end], :T_W => [sol(t)[2] for t in 1:100:t_end])
-df[!, :t] ./= 3600*24
+df[!, :t] ./= 3600 * 24
 
 df_long = stack(df, [:T, :T_W], :t, variable_name=:component, value_name=:temperature)
 
@@ -120,7 +120,7 @@ plot(
 # explicit euler
 t, u = euler_solve((temp, t) -> [ΔTΔt(temp[1], temp[2]; H=H, ρ=ρ, C=C), ΔT_WΔt(temp[1], temp[2]; H_W=H_W, ρ_W=ρ_W, C_W=C_W)], [T_0, T_W_0], t_span, h)
 df = DataFrame(:t => t, :T => u[1, :], :T_W => u[2, :])
-df[!, :t] ./= 3600*24
+df[!, :t] ./= 3600 * 24
 
 df_long = stack(df, [:T, :T_W], :t, variable_name=:component, value_name=:temperature)
 
@@ -138,7 +138,7 @@ p5 = plot(
 # implicit euler
 t, u = implicit_euler_solve((temp, t) -> [ΔTΔt(temp[1], temp[2]; H=H, ρ=ρ, C=C), ΔT_WΔt(temp[1], temp[2]; H_W=H_W, ρ_W=ρ_W, C_W=C_W)], [T_0, T_W_0], t_span, h)
 df = DataFrame(:t => t, :T => u[1, :], :T_W => u[2, :])
-df[!, :t] ./= 3600*24
+df[!, :t] ./= 3600 * 24
 
 df_long = stack(df, [:T, :T_W], :t, variable_name=:component, value_name=:temperature)
 
