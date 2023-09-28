@@ -4,11 +4,10 @@ using DifferentialEquations
 using Gadfly
 using DataFrames
 import Cairo, Fontconfig
-include("./euler.jl")
 
 const σ = 5.670374419e-8 # Stefan-Boltzmann constant
 const ω = 2π / (3600 * 24)
-const ω_hat = ω * 365
+const ω_hat = ω / 365
 const α₀ = 0.3 # Albedo
 const S₀ = 1361 # Solar constant
 const ε = 0.62 # Emissionsgrad
@@ -40,7 +39,7 @@ plot(
 )
 
 # custom solution
-t, u = euler_solve((T, t) -> f(first(T), t; H=H, ρ=ρ, C=C), [T_0], t_span, h)
+t, u = explicit_euler_solve((T, t) -> f(first(T), t; H=H, ρ=ρ, C=C), [T_0], t_span, h)
 
 p1 = plot(
     x=t ./ day_in_seconds,
@@ -96,8 +95,8 @@ t_span = (0.0, t_end)
 h = Int(ceil(t_end / 1e5))
 
 # TODO: epsilon gleich?
-ΔTΔt(T, T_W; H, ρ, C) = (S₀ * (1 - α₀) / 4 + c * σ * T_W^4 - T^4 * (ε * σ)) / (H * ρ * C)
-ΔT_WΔt(T, T_W; H_W, ρ_W, C_W) = (c * ε * σ * T^4 - T_W^4 * σ * 2c) / (H_W * ρ_W * C_W)
+ΔTΔt(T, T_W; H, ρ, C) = (S₀ * (1 - α₀) / 4 + c * σ * T_W^4 - (ε * σ) * T^4) / (H * ρ * C)
+ΔT_WΔt(T, T_W; H_W, ρ_W, C_W) = (c * ε * σ * T^4 -  2c * σ * T_W^4) / (H_W * ρ_W * C_W)
 
 # idiomatic solution
 prob = ODEProblem((temp, p, t) -> [ΔTΔt(temp[1], temp[2]; H=H, ρ=ρ, C=C), ΔT_WΔt(temp[1], temp[2]; H_W=H_W, ρ_W=ρ_W, C_W=C_W)], [T_0, T_W_0], t_span)
@@ -118,7 +117,7 @@ plot(
 )
 
 # explicit euler
-t, u = euler_solve((temp, t) -> [ΔTΔt(temp[1], temp[2]; H=H, ρ=ρ, C=C), ΔT_WΔt(temp[1], temp[2]; H_W=H_W, ρ_W=ρ_W, C_W=C_W)], [T_0, T_W_0], t_span, h)
+t, u = explicit_euler_solve((temp, t) -> [ΔTΔt(temp[1], temp[2]; H=H, ρ=ρ, C=C), ΔT_WΔt(temp[1], temp[2]; H_W=H_W, ρ_W=ρ_W, C_W=C_W)], [T_0, T_W_0], t_span, h)
 df = DataFrame(:t => t, :T => u[1, :], :T_W => u[2, :])
 df[!, :t] ./= 3600 * 24
 
