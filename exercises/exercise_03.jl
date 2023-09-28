@@ -82,7 +82,7 @@ p4 = plot(
 )
 
 # (b)
-H_W = 3
+H_W = 3000
 ρ_W = 1.5
 C_W = 1000
 const c = 0.6 # Wolkenbedeckung
@@ -90,7 +90,7 @@ const c = 0.6 # Wolkenbedeckung
 celsius_in_kelvin = 273.15
 T_0 = celsius_in_kelvin + 13
 T_W_0 = celsius_in_kelvin - 45
-t_end = 3600 * 24 * 100 # 100 Tage
+t_end = 3600 * 24 * 300 # 300 Tage
 t_span = (0.0, t_end)
 h = Int(ceil(t_end / 1e5))
 
@@ -158,3 +158,11 @@ draw(PDF("./MaKli/exercises/graphics/3a_euler_implicit_1.pdf", 14cm, 14cm), p3)
 draw(PDF("./MaKli/exercises/graphics/3a_euler_implicit_2.pdf", 14cm, 14cm), p4)
 draw(PDF("./MaKli/exercises/graphics/3b_euler_explicit.pdf", 14cm, 14cm), p5)
 draw(PDF("./MaKli/exercises/graphics/3b_euler_implicit.pdf", 14cm, 14cm), p6)
+
+Gadfly.push_theme(:dark)
+draw(SVG("./MaKli/exercises/graphics/3a_euler_explicit_1.svg", 14cm, 14cm), p1)
+draw(SVG("./MaKli/exercises/graphics/3a_euler_explicit_2.svg", 14cm, 14cm), p2)
+draw(SVG("./MaKli/exercises/graphics/3a_euler_implicit_1.svg", 14cm, 14cm), p3)
+draw(SVG("./MaKli/exercises/graphics/3a_euler_implicit_2.svg", 14cm, 14cm), p4)
+draw(SVG("./MaKli/exercises/graphics/3b_euler_explicit.svg", 14cm, 14cm), p5)
+draw(SVG("./MaKli/exercises/graphics/3b_euler_implicit.svg", 14cm, 14cm), p6)
