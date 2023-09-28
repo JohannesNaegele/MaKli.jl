@@ -1,6 +1,6 @@
 using NLsolve
 
-function euler_solve(f, u0, t_span, h)
+function explicit_euler_solve(f, u0, t_span, h)
     t0, t_end = t_span
     t = t0:h:t_end
     u = zeros(length(u0), length(t))
