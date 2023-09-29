@@ -17,6 +17,7 @@ Impute = "f7bf1975-0170-51b9-8c5f-a992d46b9575"
 NLsolve = "2774e3e8-f4cf-5e23-947b-6d7e65073b56"
 Optim = "429524aa-4258-5aef-a3af-852621145aeb"
 Pipe = "b98c9c47-44ae-5843-9183-064241ee97a0"
+Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 
 [compat]
 AlgebraOfGraphics = "0.6"
