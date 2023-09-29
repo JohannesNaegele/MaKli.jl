@@ -4,6 +4,7 @@ using DifferentialEquations
 using Gadfly
 using DataFrames
 import Cairo, Fontconfig
+Gadfly.push_theme(:dark)
 
 const σ = 5.670374419e-8 # Stefan-Boltzmann constant
 const ω = 2π / (3600 * 24)
@@ -87,7 +88,7 @@ H_W = 3000
 C_W = 1000
 const c = 0.6 # Wolkenbedeckung
 
-celsius_in_kelvin = 273.15
+const celsius_in_kelvin = 273.15
 T_0 = celsius_in_kelvin + 13
 T_W_0 = celsius_in_kelvin - 45
 t_end = 3600 * 24 * 300 # 300 Tage
@@ -152,14 +153,13 @@ p6 = plot(
     Guide.title("Solution with implicit Euler")
 )
 
-draw(PDF("./MaKli/exercises/graphics/3a_euler_explicit_1.pdf", 14cm, 14cm), p1)
-draw(PDF("./MaKli/exercises/graphics/3a_euler_explicit_2.pdf", 14cm, 14cm), p2)
-draw(PDF("./MaKli/exercises/graphics/3a_euler_implicit_1.pdf", 14cm, 14cm), p3)
-draw(PDF("./MaKli/exercises/graphics/3a_euler_implicit_2.pdf", 14cm, 14cm), p4)
-draw(PDF("./MaKli/exercises/graphics/3b_euler_explicit.pdf", 14cm, 14cm), p5)
-draw(PDF("./MaKli/exercises/graphics/3b_euler_implicit.pdf", 14cm, 14cm), p6)
+# draw(PDF("./MaKli/exercises/graphics/3a_euler_explicit_1.pdf", 14cm, 14cm), p1)
+# draw(PDF("./MaKli/exercises/graphics/3a_euler_explicit_2.pdf", 14cm, 14cm), p2)
+# draw(PDF("./MaKli/exercises/graphics/3a_euler_implicit_1.pdf", 14cm, 14cm), p3)
+# draw(PDF("./MaKli/exercises/graphics/3a_euler_implicit_2.pdf", 14cm, 14cm), p4)
+# draw(PDF("./MaKli/exercises/graphics/3b_euler_explicit.pdf", 14cm, 14cm), p5)
+# draw(PDF("./MaKli/exercises/graphics/3b_euler_implicit.pdf", 14cm, 14cm), p6)
 
-Gadfly.push_theme(:dark)
 draw(SVG("./MaKli/exercises/graphics/3a_euler_explicit_1.svg", 14cm, 14cm), p1)
 draw(SVG("./MaKli/exercises/graphics/3a_euler_explicit_2.svg", 14cm, 14cm), p2)
 draw(SVG("./MaKli/exercises/graphics/3a_euler_implicit_1.svg", 14cm, 14cm), p3)
