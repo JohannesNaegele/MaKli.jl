@@ -1,5 +1,7 @@
 module MaKli
 
-# Write your package code here.
+include("./helpers/euler.jl")
+
+export explicit_euler_solve, implicit_euler_solve
 
 end
