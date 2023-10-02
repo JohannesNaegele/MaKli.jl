@@ -6,6 +6,7 @@ import Gadfly
 using DataFrames
 import Cairo, Fontconfig
 using Plots
+Gadfly.push_theme(:dark)
 
 const celsius_in_kelvin = 273.15
 const S₀ = 1361 # Solar constant
@@ -22,7 +23,9 @@ const a_lower = 0.6
 const T_upper = 290
 const T_lower = 260
 
-# (a) Typo in t
+# (a)
+
+# ohne dynamische Solarkonstante
 function α(T)
     if T > T_upper
         return a_upper
@@ -32,16 +35,22 @@ function α(T)
         return (T - T_lower) / (T_upper - T_lower) * (a_upper - a_lower) + a_lower
     end
 end
-Q(t) = S₀ * (1 - 0.06 * sin(ω_S * t)) / (4H * ρ * C)
+Q(t) = S₀ / (4H * ρ * C)
 R_in(T, Q) = Q * (1 - α(T))
 R_out(T) = b * T^4
 u(T, t) = R_in(T, Q(t)) - R_out(T)
 
 temperatures = (-30:0.01:30) .+ celsius_in_kelvin
 
+plot(temperatures, map(T -> R_in(T, Q(0)), temperatures), dpi=200, label="R_in", xlabel="Temperature in Kelvin", ylabel="Radiation in W/m²");
+plot!(temperatures, map(T -> R_out(T), temperatures), label="R_out")
+
+# mit dynamischer Solarkonstante
+Q(t) = S₀ * (1 - 0.06 * sin(ω_S * t)) / (4H * ρ * C)
+
 gr(windowsize=(480, 480))
 anim = Plots.@animate for t in [(1 / ω_S) * (i / 100) * 2π for i in 1:100]
-    plot(temperatures, map(T -> R_in(T, Q(t)), temperatures), dpi=200, label="R_in", xlabel="temperature in Kelvin", ylabel="Radiation in W/m²")
+    plot(temperatures, map(T -> R_in(T, Q(t)), temperatures), dpi=200, label="R_in", xlabel="Temperature in Kelvin", ylabel="Radiation in W/m²")
     plot!(temperatures, map(T -> R_out(T), temperatures), label="R_out")
 end
 gif(anim, "./MaKli/exercises/graphics/4a.gif", fps=30)
@@ -49,7 +58,8 @@ gif(anim, "./MaKli/exercises/graphics/4a.gif", fps=30)
 # unique intersection if R_in(290, Q(t)) < R_out(290)
 
 # (b)
-temperatures = (-30:40) .+ celsius_in_kelvin
+Q(t) = S₀ * (1 - 0.06 * sin(ω_S * t)) / (4H * ρ * C)
+temperatures = (-30:30) .+ celsius_in_kelvin
 
 function foo(temperatures)
     t_end1 = 3600 * 24 * 365 * 1 # 1 Jahr
@@ -72,39 +82,61 @@ function foo(temperatures)
         solution5[i] = sol[end]
     end
 
-    df = DataFrame("temperature in °C" => temperatures .- celsius_in_kelvin, "1 year" => solution1, "5 years" => solution5)
+    df = DataFrame(
+        "temperature in °C" => temperatures .- celsius_in_kelvin,
+        "1 year" => solution1 .- celsius_in_kelvin,
+        "5 years" => solution5 .- celsius_in_kelvin)
     df_long = stack(df, ["1 year", "5 years"], "temperature in °C", variable_name=:horizon, value_name=:temperature)
     return df_long
 end
 
 df = foo(temperatures)
-Gadfly.plot(
+p = Gadfly.plot(
     df,
     x="temperature in °C",
     y="temperature",
     color="horizon",
-    Gadfly.Geom.point
+    Gadfly.Geom.point,
+    Gadfly.Guide.ylabel("temperature in °C"),
+    Gadfly.style(
+        point_size = 1.5Gadfly.pt,
+        highlight_width = 0Gadfly.pt,
+        # point_highlight=Gadfly.color("dark grey")
+    )
 )
 
+# Gadfly.draw(Gadfly.PDF("./MaKli/exercises/graphics/4b.pdf", 14Gadfly.cm, 10Gadfly.cm), p)
+Gadfly.draw(Gadfly.SVG("./MaKli/exercises/graphics/4b.svg", 14Gadfly.cm, 10Gadfly.cm), p)
 
 # (c)
-const T_star = (S₀ * (1 - α(T)))^(1 / 4)
-g(T) = b * (1 - 0.4tanh(x / T_star)^6)
+T_star(T) = (S₀ * (1 - α(T)) / (4ε * σ))^(1 / 4)
+g(T) = b * (1 - 0.4tanh(T / T_star(T))^6)
 R_out(T) = g(T) * T^4
 
-temperatures = (-30:0.1:30) .+ celsius_in_kelvin
+temperatures = (-30:0.01:30) .+ celsius_in_kelvin
 
-anim = Plots.@animate for t in [(1 / ω_S) * (i / 100) for i in 1:100]
-    plot(temperatures, map(T -> R_in(T, Q(t)), temperatures), dpi=200)
-    plot!(temperatures, map(T -> R_out(T), temperatures))
+anim = Plots.@animate for t in [(1 / ω_S) * (i / 100) * 2π for i in 1:100]
+    plot(temperatures, map(T -> R_in(T, Q(t)), temperatures), dpi=200, label="R_in", xlabel="Temperature in Kelvin", ylabel="Radiation in W/m²")
+    plot!(temperatures, map(T -> R_out(T), temperatures), label="R_out")
 end
-gif(anim, "./MaKli/exercises/graphics/4c.gif", fps=30)
+gif(anim, "./MaKli/exercises/graphics/4c_1.gif", fps=30)
+
+temperatures = (-30:30) .+ celsius_in_kelvin
 
 df = foo(temperatures)
-Gadfly.plot(
+p = Gadfly.plot(
     df,
     x="temperature in °C",
     y="temperature",
     color="horizon",
-    Gadfly.Geom.point
+    Gadfly.Geom.point,
+    Gadfly.Guide.ylabel("temperature in °C"),
+    Gadfly.style(
+        point_size = 1.5Gadfly.pt,
+        highlight_width = 0Gadfly.pt,
+        # point_highlight=Gadfly.color("dark grey")
+    )
 )
+
+# Gadfly.draw(Gadfly.PDF("./MaKli/exercises/graphics/4c_2.pdf", 14Gadfly.cm, 10Gadfly.cm), p)
+Gadfly.draw(Gadfly.SVG("./MaKli/exercises/graphics/4c_2.svg", 14Gadfly.cm, 10Gadfly.cm), p)

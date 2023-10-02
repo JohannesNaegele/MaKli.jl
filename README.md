@@ -11,4 +11,7 @@ Package that implements course material of the lecture Numerics and Stochastics 
 ![Dynamisches Energiebilanzmodell mit periodischen Schwankungen (Kurzzeitanalyse)](./exercises/graphics/3a_euler_implicit_2.svg)
 ![Dynamisches Energiebilanzmodell mit Wolkenschicht](./exercises/graphics/3b_euler_implicit.svg)
 
-<!-- <img src="./exercises/components.svg"> -->
+![Dynamisches Energiebilanzmodell nach Budyko-Sellers](./exercises/graphics/4a.gif)
+![Dynamisches Energiebilanzmodell nach Budyko-Sellers (Langzeitanalyse)](./exercises/graphics/4b.svg)
+![Dynamisches Energiebilanzmodell nach Budyko-Sellers modifiziert](./exercises/graphics/4c_1.gif)
+![Dynamisches Energiebilanzmodell nach Budyko-Sellers modifiziert (Langzeitanalyse)](./exercises/graphics/4c_2.svg)
