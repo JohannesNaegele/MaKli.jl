@@ -1,5 +1,3 @@
-using Pkg;
-Pkg.activate("./MaKli");
 using MaKli
 using DifferentialEquations
 import Gadfly
@@ -53,7 +51,7 @@ anim = Plots.@animate for t in [(1 / ω_S) * (i / 100) * 2π for i in 1:100]
     plot(temperatures, map(T -> R_in(T, Q(t)), temperatures), dpi=200, label="R_in", xlabel="Temperature in Kelvin", ylabel="Radiation in W/m²")
     plot!(temperatures, map(T -> R_out(T), temperatures), label="R_out")
 end
-gif(anim, "./MaKli/exercises/graphics/4a.gif", fps=30)
+gif(anim, "./exercises/graphics/4a.gif", fps=30)
 
 # unique intersection if R_in(290, Q(t)) < R_out(290)
 
@@ -105,8 +103,8 @@ p = Gadfly.plot(
     )
 )
 
-# Gadfly.draw(Gadfly.PDF("./MaKli/exercises/graphics/4b.pdf", 14Gadfly.cm, 10Gadfly.cm), p)
-Gadfly.draw(Gadfly.SVG("./MaKli/exercises/graphics/4b.svg", 14Gadfly.cm, 10Gadfly.cm), p)
+# Gadfly.draw(Gadfly.PDF("./exercises/graphics/4b.pdf", 14Gadfly.cm, 10Gadfly.cm), p)
+Gadfly.draw(Gadfly.SVG("./exercises/graphics/4b.svg", 14Gadfly.cm, 10Gadfly.cm), p)
 
 # (c)
 T_star(T) = (S₀ * (1 - α(T)) / (4ε * σ))^(1 / 4)
@@ -119,7 +117,7 @@ anim = Plots.@animate for t in [(1 / ω_S) * (i / 100) * 2π for i in 1:100]
     plot(temperatures, map(T -> R_in(T, Q(t)), temperatures), dpi=200, label="R_in", xlabel="Temperature in Kelvin", ylabel="Radiation in W/m²")
     plot!(temperatures, map(T -> R_out(T), temperatures), label="R_out")
 end
-gif(anim, "./MaKli/exercises/graphics/4c_1.gif", fps=30)
+gif(anim, "./exercises/graphics/4c_1.gif", fps=30)
 
 temperatures = (-30:30) .+ celsius_in_kelvin
 
@@ -138,5 +136,5 @@ p = Gadfly.plot(
     )
 )
 
-# Gadfly.draw(Gadfly.PDF("./MaKli/exercises/graphics/4c_2.pdf", 14Gadfly.cm, 10Gadfly.cm), p)
-Gadfly.draw(Gadfly.SVG("./MaKli/exercises/graphics/4c_2.svg", 14Gadfly.cm, 10Gadfly.cm), p)
+# Gadfly.draw(Gadfly.PDF("./exercises/graphics/4c_2.pdf", 14Gadfly.cm, 10Gadfly.cm), p)
+Gadfly.draw(Gadfly.SVG("./exercises/graphics/4c_2.svg", 14Gadfly.cm, 10Gadfly.cm), p)

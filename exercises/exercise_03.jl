@@ -1,4 +1,3 @@
-using Pkg; Pkg.activate("./MaKli")
 using MaKli
 using DifferentialEquations
 using Gadfly
@@ -153,16 +152,16 @@ p6 = plot(
     Guide.title("Solution with implicit Euler")
 )
 
-# draw(PDF("./MaKli/exercises/graphics/3a_euler_explicit_1.pdf", 14cm, 14cm), p1)
-# draw(PDF("./MaKli/exercises/graphics/3a_euler_explicit_2.pdf", 14cm, 14cm), p2)
-# draw(PDF("./MaKli/exercises/graphics/3a_euler_implicit_1.pdf", 14cm, 14cm), p3)
-# draw(PDF("./MaKli/exercises/graphics/3a_euler_implicit_2.pdf", 14cm, 14cm), p4)
-# draw(PDF("./MaKli/exercises/graphics/3b_euler_explicit.pdf", 14cm, 14cm), p5)
-# draw(PDF("./MaKli/exercises/graphics/3b_euler_implicit.pdf", 14cm, 14cm), p6)
+# draw(PDF("./exercises/graphics/3a_euler_explicit_1.pdf", 14cm, 14cm), p1)
+# draw(PDF("./exercises/graphics/3a_euler_explicit_2.pdf", 14cm, 14cm), p2)
+# draw(PDF("./exercises/graphics/3a_euler_implicit_1.pdf", 14cm, 14cm), p3)
+# draw(PDF("./exercises/graphics/3a_euler_implicit_2.pdf", 14cm, 14cm), p4)
+# draw(PDF("./exercises/graphics/3b_euler_explicit.pdf", 14cm, 14cm), p5)
+# draw(PDF("./exercises/graphics/3b_euler_implicit.pdf", 14cm, 14cm), p6)
 
-draw(SVG("./MaKli/exercises/graphics/3a_euler_explicit_1.svg", 14cm, 14cm), p1)
-draw(SVG("./MaKli/exercises/graphics/3a_euler_explicit_2.svg", 14cm, 14cm), p2)
-draw(SVG("./MaKli/exercises/graphics/3a_euler_implicit_1.svg", 14cm, 14cm), p3)
-draw(SVG("./MaKli/exercises/graphics/3a_euler_implicit_2.svg", 14cm, 14cm), p4)
-draw(SVG("./MaKli/exercises/graphics/3b_euler_explicit.svg", 14cm, 14cm), p5)
-draw(SVG("./MaKli/exercises/graphics/3b_euler_implicit.svg", 14cm, 14cm), p6)
+draw(SVG("./exercises/graphics/3a_euler_explicit_1.svg", 14cm, 14cm), p1)
+draw(SVG("./exercises/graphics/3a_euler_explicit_2.svg", 14cm, 14cm), p2)
+draw(SVG("./exercises/graphics/3a_euler_implicit_1.svg", 14cm, 14cm), p3)
+draw(SVG("./exercises/graphics/3a_euler_implicit_2.svg", 14cm, 14cm), p4)
+draw(SVG("./exercises/graphics/3b_euler_explicit.svg", 14cm, 14cm), p5)
+draw(SVG("./exercises/graphics/3b_euler_implicit.svg", 14cm, 14cm), p6)

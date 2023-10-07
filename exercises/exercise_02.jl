@@ -1,4 +1,3 @@
-using Pkg; Pkg.activate("./MaKli")
 using DataFrames
 using CairoMakie
 using Pipe
@@ -12,8 +11,8 @@ CairoMakie.activate!(type = "svg")
 
 ## Aufgabe 1
 
-co2 = CSV.File("./MaKli/data/ncei.noaa.gov_pub_data_paleo_icecore_antarctica_vostok_co2nat-noaa.csv", comment="#") |> DataFrame
-temp = CSV.File("./MaKli/data/ncei.noaa.gov_pub_data_paleo_icecore_antarctica_vostok_deutnat-noaa.csv", comment="#") |> DataFrame
+co2 = CSV.File("./data/ncei.noaa.gov_pub_data_paleo_icecore_antarctica_vostok_co2nat-noaa.csv", comment="#") |> DataFrame
+temp = CSV.File("./data/ncei.noaa.gov_pub_data_paleo_icecore_antarctica_vostok_deutnat-noaa.csv", comment="#") |> DataFrame
 
 df = outerjoin(co2, temp, on = :gas_ageBP => :ice_ageBP)
 sort!(df, :gas_ageBP, rev=true)
@@ -31,7 +30,7 @@ lines!(ax1, df.gas_ageBP./1000, Impute.interp(df.CO2), color = :blue)
 lines!(ax2, df.gas_ageBP./1000, Impute.interp(df.deltaTS), color = :red)
 
 f
-save("./MaKli/exercises/co2_temp.svg", f)
+save("./exercises/co2_temp.svg", f)
 
 # (b)
 df_rounded = @pipe df |>
@@ -79,7 +78,7 @@ ax1 = Axis(f[1, 1], yticklabelcolor = :blue, xlabel = "CO2 in PPM", ylabel = "Te
 
 scatter!(ax1, df_regr.CO2, df_regr.deltaTS_mean, color = :blue)
 f
-save("./MaKli/exercises/co2_temp_cor.svg", f)
+save("./exercises/co2_temp_cor.svg", f)
 
 ## Aufgabe 2
 g(x) = 3 - (x * exp(x))/(exp(x) - 1)

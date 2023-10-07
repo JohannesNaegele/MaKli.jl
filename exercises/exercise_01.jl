@@ -1,4 +1,3 @@
-using Pkg; Pkg.activate("./MaKli")
 using DataFrames
 using Gadfly
 using Pipe
@@ -88,7 +87,7 @@ p = plot(
     Guide.ylabel("Characteristic Spatial Scale in m")
 )
 
-draw(SVG("./MaKli/exercises/components.svg", 20cm, 20cm), p)
+draw(SVG("./exercises/components.svg", 20cm, 20cm), p)
 
 # TODO: fix ^ Unicode
 
