@@ -15,3 +15,5 @@ Package that implements course material of the lecture Numerics and Stochastics 
 ![Dynamisches Energiebilanzmodell nach Budyko-Sellers (Langzeitanalyse)](./exercises/graphics/4b.svg)
 ![Dynamisches Energiebilanzmodell nach Budyko-Sellers modifiziert](./exercises/graphics/4c_1.gif)
 ![Dynamisches Energiebilanzmodell nach Budyko-Sellers modifiziert (Langzeitanalyse)](./exercises/graphics/4c_2.svg)
+
+![Temperatur und Dichte von Wasser](./exercises/graphics/5a_2.svg)
