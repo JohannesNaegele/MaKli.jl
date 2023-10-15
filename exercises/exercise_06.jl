@@ -1,19 +1,22 @@
+using MaKli
 using Gadfly
 using DataFrames
 
-λ1 = 3000
-λ2 = 3000
-λ3 = 1000
-S0 = 35
-T1_star = 279.6
-T2_star = 275.7
-T3_star = 284.7
-V1 = 1.1
-V2 = 0.4
-V3 = 0.68
-V4 = 0.05
+params = @equations begin
+    λ1 = 3000
+    λ2 = 3000
+    λ3 = 1000
+    S0 = 35
+    T1_star = 279.6
+    T2_star = 275.7
+    T3_star = 284.7
+    V1 = 1.1
+    V2 = 0.4
+    V3 = 0.68
+    V4 = 0.05
+end
 
-function T(T, S)
+function Δtemp(T)
     return [
         (M(t) / V1) * (T[4] - T[1]) + λ1 * (T1_star - T[1]),
         (M(t) / V2) * (T[3] - T[2]) + λ2 * (T2_star - T[2]),
@@ -22,14 +25,17 @@ function T(T, S)
     ]
 end
 
-function S(T, S)
+function Δsalt(S)
     return [
-
+        (M(t) / V1) * (S[4] - S[1]) + S0 * F1 / V1
+        (M(t) / V2) * (S[3] - S[2]) + S0 * F2 / V2
+        (M(t) / V3) * (S[1] - S[3]) + S0 * (F2 - F1) / V3
+        (M(t) / V4) * (S[2] - S[4])
     ]
 end
 
 function u(x)
-    return vcat(T(x[1:4], x[5:8]), S(x[1:4], x[5:8]))
+    return vcat(Δtemp(x[1:4]), Δsalt([1:4]))
 end
 
 
