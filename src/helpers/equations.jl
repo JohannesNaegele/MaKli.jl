@@ -5,7 +5,7 @@ macro equations(block)
     assignments = filter(e -> isa(e, Expr) && e.head == :(=), exprs)
 
     # Extract variable names and their values as symbols with colons
-    pairs = [Expr(:call, :(=>), :($(":$(a.args[1])")), a.args[2]) for a in assignments]
+    pairs = [Expr(:call, :(=>), :(Symbol($("$(a.args[1])"))), a.args[2]) for a in assignments]
 
     return esc(Expr(:call, :Dict, pairs...))
 end
