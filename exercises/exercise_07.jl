@@ -4,8 +4,6 @@ using Plots
 import CairoMakie
 using DifferentialEquations
 
-const celsius_in_kelvin = 273.15
-
 # (c)
 # Lorenz attractor
 function lorenz!(dx, x; σ, R, B)
@@ -18,20 +16,20 @@ end
 n_steps = 1e6
 t_end = 200
 t_span = (0.0, t_end)
-h1 = Int(ceil(t_end / n_steps))
+h = t_end / n_steps
 
 # Parameter choice
 # σ, R, B = 9, 23, 3
 x0 = [10, 13, 34]
 
 # Euler solution
-t, sol = explicit_euler_solve(
-    (du, u, p, t) -> lorenz!(du, u, σ=9, R=23, B=3),
-    vcat([temperatures[i] for j in 1:4], [salt for j in 1:4]),
-    t_span1,
-    h1
+t, sol = explicit_euler_solve!(
+    (du, u, t) -> (lorenz!(du, u, σ=9, R=23, B=3)),
+    x0,
+    t_span,
+    h
 )
-plot(t, sol, title="")
+plot(sol[1, :], sol[2, :], sol[3, :], title="Explicit Euler")
 
 # Runge-Kutta solution
 prob = ODEProblem(
@@ -53,7 +51,11 @@ prob = ODEProblem(
 )
 sol = solve(prob)
 plot(sol, idxs = (1, 2, 3), title="Dormand-Prince's explicit 5/4 Runge-Kutta method\nwith reltol")
+
+# letztes Drittel plot
+
 # (d)
+x0 = [1.0, 1.0, 1.0]
 
 # (10, 20, 8/3)
 # (10, 100, 8/3)
