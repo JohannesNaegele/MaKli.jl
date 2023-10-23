@@ -18,35 +18,17 @@ t_end = 200
 t_span = (0.0, t_end)
 h = t_end / n_steps
 
-# Parameter choice
+# Initial values
 x0 = [10, 13, 34]
 
 # Euler solution
-t, sol = explicit_euler_solve!(
+t_eul, sol_eul = explicit_euler_solve!(
     (du, u, t) -> (lorenz!(du, u, σ=9, R=23, B=3)),
     x0,
     t_span,
     h
 )
-
-plot(
-    t,
-    [sol[1, :], sol[2, :], sol[3, :]],
-    layout=(3, 1),
-    legend=false,
-    title="Explicit Euler"
-)
-plot(
-    sol[1, :], sol[2, :], sol[3, :],
-    title="Explicit Euler",
-    label="x,y,z"
-)
-last_third = Int(floor(length(sol[1, :]) * 2 / 3)):length(sol[1, :])
-plot(
-    sol[1, last_third], sol[2, last_third], sol[3, last_third],
-    title="Explicit Euler, last third of iterations",
-    label="x,y,z"
-)
+last_third_eul = Int(floor(length(sol_eul[1, :]) * 2 / 3)):length(sol_eul[1, :])
 
 # Runge-Kutta solution
 prob = ODEProblem(
@@ -55,15 +37,8 @@ prob = ODEProblem(
     t_span,
     DP5(),
 )
-sol = solve(prob)
-last_third = Int(floor(length(sol.t) * 2 / 3)):length(sol.t)
-plot(sol.t, [sol[1, :], sol[2, :], sol[3, :]], layout=(3, 1), legend=false)
-plot(sol, idxs=(1, 2, 3), title="Dormand-Prince's explicit 5/4 Runge-Kutta method")
-plot(
-    sol[1, last_third], sol[2, last_third], sol[3, last_third],
-    title="Dormand-Prince's explicit 5/4 Runge-Kutta method",
-    label="x,y,z"
-)
+sol_45 = solve(prob)
+last_third_45 = Int(floor(length(sol_45.t) * 2 / 3)):length(sol_45.t)
 
 # With reltol
 prob = ODEProblem(
@@ -73,13 +48,38 @@ prob = ODEProblem(
     DP5(),
     reltol=1e-7
 )
-sol = solve(prob)
-plot(sol.t, [sol[1, :], sol[2, :], sol[3, :]], layout=(3, 1), legend=false)
-plot(sol, idxs=(1, 2, 3), title="Dormand-Prince's explicit 5/4 Runge-Kutta method\nwith reltol")
-last_third = Int(floor(length(sol.t) * 2 / 3)):length(sol.t)
+sol_reltol = solve(prob)
+last_third_reltol = Int(floor(length(sol_reltol.t) * 2 / 3)):length(sol_reltol.t)
+
 plot(
-    sol[1, last_third], sol[2, last_third], sol[3, last_third],
-    title="Dormand-Prince's explicit 5/4 Runge-Kutta method\nwith reltol",
+    t_eul,
+    [sol_eul[1, :], sol_eul[2, :], sol_eul[3, :]],
+    layout=(3, 1),
+    legend=false,
+    plot_title="Explicit Euler"
+)
+plot(
+    sol_eul[1, :], sol_eul[2, :], sol_eul[3, :],
+    title="Explicit Euler",
+    label="x,y,z"
+)
+plot(
+    sol_eul[1, last_third_eul], sol_eul[2, last_third_eul], sol_eul[3, last_third_eul],
+    title="Explicit Euler, last third of iterations",
+    label="x,y,z"
+)
+plot!(sol_45.t, [sol_45[1, :], sol_45[2, :], sol_45[3, :]], layout=(3, 1), legend=false)
+plot(sol_45, idxs=(1, 2, 3), title="Dormand-Prince's explicit 5/4 Runge-Kutta method")
+plot(
+    sol_45[1, last_third_45], sol_45[2, last_third_45], sol_45[3, last_third_45],
+    title="Dormand-Prince's explicit 5/4 Runge-Kutta method",
+    label="x,y,z"
+)
+plot!(sol_reltol.t, [sol_reltol[1, :], sol_reltol[2, :], sol_reltol[3, :]], layout=(3, 1), legend=false)
+plot(sol_reltol, idxs=(1, 2, 3), title="Dormand-Prince's explicit 5/4 Runge-Kutta method\nwith reltol")
+plot(
+    sol_reltol[1, last_third_reltol], sol_reltol[2, last_third_reltol], sol_reltol[3, last_third_reltol],
+    title="Dormand-Prince's explicit 5/4 Runge-Kutta method\nwith reltol=1e-7",
     label="x,y,z"
 )
 
