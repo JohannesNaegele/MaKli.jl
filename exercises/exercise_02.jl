@@ -1,4 +1,3 @@
-using Pkg; Pkg.activate("./MaKli")
 using DataFrames
 using CairoMakie
 using Pipe
@@ -7,12 +6,13 @@ using Statistics
 using GLM
 using Optim
 using NLsolve
+using Impute
 CairoMakie.activate!(type = "svg")
 
 ## Aufgabe 1
 
-co2 = CSV.File("./MaKli/data/ncei.noaa.gov_pub_data_paleo_icecore_antarctica_vostok_co2nat-noaa.csv", comment="#") |> DataFrame
-temp = CSV.File("./MaKli/data/ncei.noaa.gov_pub_data_paleo_icecore_antarctica_vostok_deutnat-noaa.csv", comment="#") |> DataFrame
+co2 = CSV.File("./data/ncei.noaa.gov_pub_data_paleo_icecore_antarctica_vostok_co2nat-noaa.csv", comment="#") |> DataFrame
+temp = CSV.File("./data/ncei.noaa.gov_pub_data_paleo_icecore_antarctica_vostok_deutnat-noaa.csv", comment="#") |> DataFrame
 
 df = outerjoin(co2, temp, on = :gas_ageBP => :ice_ageBP)
 sort!(df, :gas_ageBP, rev=true)
@@ -25,11 +25,12 @@ ax2 = Axis(f[1, 1], yticklabelcolor = :red, yaxisposition = :right, xreversed=tr
 hidespines!(ax2)
 hidexdecorations!(ax2)
 
-lines!(ax1, co2.gas_ageBP./1000, co2.CO2, color = :blue)
-lines!(ax2, temp.ice_ageBP./1000, temp.deltaTS, color = :red)
+# watch out: if you have two axes you need the same x-axis length!
+lines!(ax1, df.gas_ageBP./1000, Impute.interp(df.CO2), color = :blue)
+lines!(ax2, df.gas_ageBP./1000, Impute.interp(df.deltaTS), color = :red)
 
 f
-save("./MaKli/exercises/co2_temp.svg", f)
+save("./exercises/co2_temp.svg", f)
 
 # (b)
 df_rounded = @pipe df |>
@@ -77,17 +78,19 @@ ax1 = Axis(f[1, 1], yticklabelcolor = :blue, xlabel = "CO2 in PPM", ylabel = "Te
 
 scatter!(ax1, df_regr.CO2, df_regr.deltaTS_mean, color = :blue)
 f
-save("./MaKli/exercises/co2_temp_cor.svg", f)
+save("./exercises/co2_temp_cor.svg", f)
 
 ## Aufgabe 2
 g(x) = 3 - (x * exp(x))/(exp(x) - 1)
 sol = nlsolve(x -> g(first(x)), [1.0])
 sol.zero
 
-### old ###
+# ------------------------
+# | experimenteller Teil |
+# ------------------------
 
 const h = 6.62607015e-34
-const k_B = 1.380649e-23
+const k_B = 1.380649e-23 # Boltzmann constant
 const c = 299792458
 
 function u(ν, T)
