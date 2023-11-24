@@ -18,7 +18,7 @@ function sde_euler!(f, g, u₀, tspan, dt)
     time = t0:dt:t_end
     sol = zeros(length(u₀), length(time))
     # increment = zeros(first(methods(g, typeof.(u₀))).nargs - 1)
-    increment = similar(g(u₀, t0))
+    increment = deepcopy(g(u₀, t0))
     sol[:, 1] = u₀
     for t in eachindex(time)[2:end]
         t_value = time[t]
@@ -55,9 +55,38 @@ Plots.savefig("./exercises/graphics/12_2a_11.png")
 Plots.plot(res[1], res[2][1, :], res[2][2, :]);
 Plots.savefig("./exercises/graphics/12_2a_12.png")
 
-# (b)
 res = sde_euler!((u, t) -> f(u[1], u[2], a=4.4, b=0.3), (u, t) -> g(u[1], u[2]), [1.0, 1.0], (0.0, T), T / n)
 Plots.plot(res[2][1, :], res[2][2, :]);
 Plots.savefig("./exercises/graphics/12_2a_21.png")
 Plots.plot(res[1], res[2][1, :], res[2][2, :]);
 Plots.savefig("./exercises/graphics/12_2a_22.png")
+
+# (b)
+g(x, y) = [
+    0.0,
+    [0.1, 0.2, 0.4]'
+]
+
+# res = sde_euler!((u, t) -> f(u[1], u[2], a=1.4, b=3.0), (u, t) -> g(u[1], u[2]), [1.0, 1.0], (0.0, T), T / n)
+# Plots.plot(res[2][1, :], res[2][2, :]);
+# Plots.savefig("./exercises/graphics/12_2b_11.png")
+# Plots.plot(res[1], res[2][1, :], res[2][2, :]);
+# Plots.savefig("./exercises/graphics/12_2b_12.png")
+
+# res = sde_euler!((u, t) -> f(u[1], u[2], a=4.4, b=0.3), (u, t) -> g(u[1], u[2]), [1.0, 1.0], (0.0, T), T / n)
+# Plots.plot(res[2][1, :], res[2][2, :]);
+# Plots.savefig("./exercises/graphics/12_2b_21.png")
+# Plots.plot(res[1], res[2][1, :], res[2][2, :]);
+# Plots.savefig("./exercises/graphics/12_2b_22.png")
+
+res = sde_euler!((u, t) -> f(u[1], u[2], a=1.0, b=1.0), (u, t) -> g(u[1], u[2]), [1.0, 1.0], (0.0, T), T / n)
+Plots.plot(res[2][1, :], res[2][2, :]);
+Plots.savefig("./exercises/graphics/12_2b_11.png")
+Plots.plot(res[1], res[2][1, :], res[2][2, :]);
+Plots.savefig("./exercises/graphics/12_2b_12.png")
+
+res = sde_euler!((u, t) -> f(u[1], u[2], a=1.0, b=2.0), (u, t) -> g(u[1], u[2]), [1.0, 1.0], (0.0, T), T / n)
+Plots.plot(res[2][1, :], res[2][2, :]);
+Plots.savefig("./exercises/graphics/12_2b_21.png")
+Plots.plot(res[1], res[2][1, :], res[2][2, :]);
+Plots.savefig("./exercises/graphics/12_2b_22.png")
